@@ -5,40 +5,6 @@
 
 using namespace std;
 
-vector<int> tokenizeBy(string paramWord, char delimiter)
-{
-    stringstream ss(paramWord);
-    string word;
-    vector<int> sequenceList;
-
-    while (!ss.eof())
-    {
-        int value;
-
-        getline(ss, word, delimiter);
-
-        stringstream ssInt(word);
-
-        if (ssInt >> value)
-        {
-            if (ssInt.eof())
-            {
-                sequenceList.push_back(value);
-            }
-            else
-            {
-                throw runtime_error("Invalid value " + word);
-            }
-        }
-        else
-        {
-            throw runtime_error("Invalid value " + word);
-        }
-    }
-
-    return sequenceList;
-}
-
 void getDifferences(vector<int> &valuesToSubtract, vector<int> &differences)
 {
     if (valuesToSubtract.size() < 2)
@@ -83,7 +49,7 @@ int main(int argc, char *argv[])
 {
     if (argc == 1)
     {
-        cerr << "Please provide a sequence to process";
+        std::cerr << "Please provide a sequence to process")
         return EXIT_FAILURE;
     }
 
@@ -101,8 +67,8 @@ int main(int argc, char *argv[])
         cout << endl;
 
         vector<vector<int>> listOfDifferences;
-        int currentSequence;
-        int finalCommonDifference;
+        int currentSequence = 0;
+        int finalCommonDifference = 0;
 
         while (true)
         {
