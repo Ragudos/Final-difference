@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    ".stylelintrc": "json",
+    "iostream": "cpp",
+    "iosfwd": "cpp"
+  }
+}
