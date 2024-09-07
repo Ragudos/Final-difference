@@ -10,6 +10,7 @@ class DifferenceTable
   public:
     DifferenceTable(std::vector<int> sequence);
     int GetCommonDifference();
+    int GetNextValueInSequence();
 
   protected:
     std::vector<int> sequence;
@@ -18,8 +19,15 @@ class DifferenceTable
     /// and 1 is the starting point for `listOfDifferences`
     int currentRowSequence;
     int finalCommonDifference;
+    int nextValueInSequence;
+    bool isConvergent;
+    bool verbose;
 
+    void CalculateCommonDifference();
     void CalculateDifferencesForCurrentRow();
+    void CalculateNextValueInSequence();
+
+    std::vector<int> CalculateDifferencesOfVecInt(std::vector<int> &vecInt);
 };
 
 #endif

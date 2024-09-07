@@ -1,4 +1,5 @@
 #include "./lexicon.h"
+#include <string>
 
 const std::string Tokenizer::DELIMITERS(" \t\n\r");
 
@@ -42,7 +43,7 @@ bool Tokenizer::NextToken(const std::string &delimiters)
         return true;
     }
 
-    m_token = m_string.substr(i, j - 1);
+    m_token = m_string.substr(i, j - i);
     m_offset = j;
 
     return true;

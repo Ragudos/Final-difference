@@ -93,7 +93,17 @@ std::map<ArgumentType, const char *> processArguments(int argc, char *argv[])
                 value = "true";
             }
 
-            arguments[fromString(argument)] = value;
+            ArgumentType type = fromString(argument);
+
+            auto doesExist = arguments.find(type);
+
+            if (doesExist != arguments.end())
+            {
+                throw std::invalid_argument(
+                    "There cannot be duplicates of a flag");
+            }
+
+            arguments[type] = value;
         }
         else
         {

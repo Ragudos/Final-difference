@@ -3,47 +3,50 @@
 #include <map>
 
 #include "./arguments.h"
+#include "./difference_table.h"
 #include "./lexicon.h"
+#include "./utils.h"
 
-void getDifferences(
-    std::vector<int> &valuesToSubtract, std::vector<int> &differences)
+/**
+ * Returns `true` if the program should exit early.
+ */
+bool extractArguments(
+    std::map<ArgumentType, const char *> &arguments,
+    ArgumentType &previousArgumentType, const char *&sequence,
+    int &amountToPredict)
 {
-    if (valuesToSubtract.size() < 2)
+    for (const auto &argument : arguments)
     {
-        return;
+        ArgumentType type = argument.first;
+        const char *value = argument.second;
+
+        switch (type)
+        {
+        case HELP:
+        {
+            // TODO: Track all the previous commands to HELP to ouptut the
+            // appropriate value.
+            displayCommandHelp(previousArgumentType);
+
+            return true;
+        }
+        break;
+        case SEQUENCE:
+        {
+            sequence = value;
+        }
+        break;
+        case COUNT:
+        {
+            amountToPredict = charPointerToInt(value);
+        }
+        break;
+        }
+
+        previousArgumentType = type;
     }
 
-    for (int i = 0; i < valuesToSubtract.size() - 1; ++i)
-    {
-        int difference;
-
-        if (i == valuesToSubtract.size() - 1)
-        {
-            difference = valuesToSubtract.at(i) - valuesToSubtract.at(i - 1);
-        }
-        else
-        {
-            difference = valuesToSubtract.at(i + 1) - valuesToSubtract.at(i);
-        }
-
-        differences.push_back(difference);
-    }
-}
-
-bool isVectorElementsAllEqual(std::vector<int> &vec)
-{
-    for (int i = 0; i < vec.size(); ++i)
-    {
-        for (int j = 0; j < vec.size(); ++j)
-        {
-            if (vec.at(i) != vec.at(j))
-            {
-                return false;
-            }
-        }
-    }
-
-    return true;
+    return false;
 }
 
 int main(int argc, char *argv[])
@@ -73,121 +76,54 @@ int main(int argc, char *argv[])
     }
 
     ArgumentType previousArgumentType;
+    const char *sequence;
+    int amountToPredict;
 
-    for (const auto &argument : arguments)
+    if (extractArguments(
+            arguments, previousArgumentType, sequence, amountToPredict))
     {
-        ArgumentType type = argument.first;
-        const char *value = argument.second;
-
-        switch (type)
-        {
-        case HELP:
-        {
-            // TODO: Track all the previous commands to HELP to ouptut the
-            // appropriate value.
-            displayCommandHelp(previousArgumentType);
-
-            return EXIT_SUCCESS;
-        }
-        break;
-        case SEQUENCE:
-        {
-        }
-        break;
-        case COUNT:
-        {
-        }
-        break;
-        }
-
-        previousArgumentType = type;
+        return EXIT_SUCCESS;
     }
 
-    /*try
+    std::vector<std::string> tokenizedSequence = split(sequence, ",");
+    std::vector<int> parsedSequence;
+
+    try
     {
-        vector<int> sequence = tokenizeBy(input, ',');
-
-        for (int i : sequence)
-        {
-            cout << i << " ";
-        }
-
-        cout << endl;
-
-        vector<vector<int>> listOfDifferences;
-        int currentSequence = 0;
-        int finalCommonDifference = 0;
-
-        while (true)
-        {
-            vector<int> differences;
-
-            if (currentSequence == 0)
-            {
-                getDifferences(sequence, differences);
-            }
-            else
-            {
-                getDifferences(listOfDifferences[currentSequence - 1],
-    differences);
-            }
-
-            cout << " List of differences for sequence/depth of " <<
-    currentSequence + 1 << endl;
-
-            for (int difference : differences)
-            {
-                cout << difference << " ";
-            }
-
-            // If no differences, this means we couldn't subtract
-            // anything
-            if (differences.size() == 0)
-            {
-                break;
-            }
-
-            cout << endl;
-
-            cout << "Differences Length: " << differences.size() << endl;
-
-            if (isVectorElementsAllEqual(differences) && differences.size() >=
-    2)
-            {
-                finalCommonDifference = differences.at(0);
-
-                break;
-            }
-
-            listOfDifferences.push_back(differences);
-            currentSequence += 1;
-        }
-
-        if (finalCommonDifference == 0)
-        {
-            cout << "There is no convergence." << endl;
-
-            return EXIT_SUCCESS;
-        }
-
-        cout << "Final common difference: " << finalCommonDifference << endl;
-
-        int sum;
-
-        for (vector<int> differences : listOfDifferences)
-        {
-            sum += differences.at(differences.size() - 1);
-        }
-
-        sum += finalCommonDifference;
-        sum += sequence.at(sequence.size() - 1);
-
-        cout << "The next value is: " << sum << endl;
+        parsedSequence = vecStrToVecInt(tokenizedSequence);
     }
-    catch (const runtime_error &err)
+    catch (const std::runtime_error &err)
     {
-        cout << err.what();
-    }*/
+        std::cerr << err.what() << std::endl;
+
+        return EXIT_FAILURE;
+    }
+
+    DifferenceTable differenceTable(parsedSequence);
+
+    try
+    {
+        std::cout << "Common difference: "
+                  << differenceTable.GetCommonDifference() << std::endl;
+
+        if (amountToPredict)
+        {
+            std::cout << "Next values in sequence: " << std::endl << "\t";
+
+            for (int i = 0; i < amountToPredict; ++i)
+            {
+                std::cout << differenceTable.GetNextValueInSequence() << " ";
+            }
+
+            std::cout << std::endl;
+        }
+    }
+    catch (const std::runtime_error &err)
+    {
+        std::cerr << err.what() << std::endl;
+
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }
