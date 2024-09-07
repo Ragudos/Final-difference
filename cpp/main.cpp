@@ -103,8 +103,9 @@ int main(int argc, char *argv[])
 
     try
     {
-        std::cout << "Common difference: "
-                  << differenceTable.GetCommonDifference() << std::endl;
+        int commonDifference = differenceTable.GetCommonDifference();
+
+        std::cout << "Common difference: " << commonDifference << std::endl;
 
         if (amountToPredict)
         {
