@@ -1,11 +1,12 @@
+#include <cstring>
 #include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
+#include <map>
 
-using namespace std;
+#include "./arguments.h"
+#include "./lexicon.h"
 
-void getDifferences(vector<int> &valuesToSubtract, vector<int> &differences)
+void getDifferences(
+    std::vector<int> &valuesToSubtract, std::vector<int> &differences)
 {
     if (valuesToSubtract.size() < 2)
     {
@@ -29,7 +30,7 @@ void getDifferences(vector<int> &valuesToSubtract, vector<int> &differences)
     }
 }
 
-bool isVectorElementsAllEqual(vector<int> &vec)
+bool isVectorElementsAllEqual(std::vector<int> &vec)
 {
     for (int i = 0; i < vec.size(); ++i)
     {
@@ -49,13 +50,60 @@ int main(int argc, char *argv[])
 {
     if (argc == 1)
     {
-        std::cerr << "Please provide a sequence to process")
+        std::cerr << "What would you like me to do?" << std::endl;
+
+        displayHelp();
+
         return EXIT_FAILURE;
     }
 
-    string input = argv[1];
+    std::map<ArgumentType, const char *> arguments;
 
     try
+    {
+        arguments = processArguments(argc, argv);
+    }
+    catch (const std::invalid_argument &err)
+    {
+        std::cerr << err.what() << std::endl << std::endl;
+
+        displayHelp();
+
+        return EXIT_FAILURE;
+    }
+
+    ArgumentType previousArgumentType;
+
+    for (const auto &argument : arguments)
+    {
+        ArgumentType type = argument.first;
+        const char *value = argument.second;
+
+        switch (type)
+        {
+        case HELP:
+        {
+            // TODO: Track all the previous commands to HELP to ouptut the
+            // appropriate value.
+            displayCommandHelp(previousArgumentType);
+
+            return EXIT_SUCCESS;
+        }
+        break;
+        case SEQUENCE:
+        {
+        }
+        break;
+        case COUNT:
+        {
+        }
+        break;
+        }
+
+        previousArgumentType = type;
+    }
+
+    /*try
     {
         vector<int> sequence = tokenizeBy(input, ',');
 
@@ -80,10 +128,12 @@ int main(int argc, char *argv[])
             }
             else
             {
-                getDifferences(listOfDifferences[currentSequence - 1], differences);
+                getDifferences(listOfDifferences[currentSequence - 1],
+    differences);
             }
 
-            cout << " List of differences for sequence/depth of " << currentSequence + 1 << endl;
+            cout << " List of differences for sequence/depth of " <<
+    currentSequence + 1 << endl;
 
             for (int difference : differences)
             {
@@ -101,7 +151,8 @@ int main(int argc, char *argv[])
 
             cout << "Differences Length: " << differences.size() << endl;
 
-            if (isVectorElementsAllEqual(differences) && differences.size() >= 2)
+            if (isVectorElementsAllEqual(differences) && differences.size() >=
+    2)
             {
                 finalCommonDifference = differences.at(0);
 
@@ -136,7 +187,7 @@ int main(int argc, char *argv[])
     catch (const runtime_error &err)
     {
         cout << err.what();
-    }
+    }*/
 
     return EXIT_SUCCESS;
 }
