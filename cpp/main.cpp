@@ -113,7 +113,10 @@ int main(int argc, char *argv[])
 
             for (int i = 0; i < amountToPredict; ++i)
             {
-                std::cout << differenceTable.GetNextValueInSequence() << " ";
+                int nextValueInSequence =
+                    differenceTable.GetNextValueInSequence();
+
+                std::cout << nextValueInSequence << " ";
             }
 
             std::cout << std::endl;

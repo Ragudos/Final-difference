@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node main.js"
   },
   "keywords": [],
   "author": {
@@ -11,5 +11,9 @@
     "name": "Aaron Ragudos"
   },
   "license": "MIT",
-  "description": "Predicts the next number in a sequence"
+  "description": "Predicts the next number in a sequence",
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "prettier": "^3.3.3"
+  }
 }
