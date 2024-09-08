@@ -10,7 +10,7 @@ g++ ./main.cpp ./arguments.cpp ./lexicon.cpp ./utils.cpp ./difference_table.cpp 
 
 Make sure you compile it first
 
-- `s`: A comma-separated string that is a sequence numbers
+- `s`: A comma-separated string that is a sequence of numbers
 - `c`: An integer indicating the amount of predictions the program will make.
 
 ```bash
