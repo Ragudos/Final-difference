@@ -40,17 +40,56 @@ function main() {
             }
         }
 
+        listSequences.push(differences);
+
         if (areAllDifferencesTheSame) {
             commonDifference = differences[0];
 
             break;
         }
 
-        listSequences.push(differences);
         currListIdx += 1;
     }
 
-    console.log(listSequences, commonDifference);
+    console.log("List of differences acquired");
+    console.log("----------------------------");
+    listSequences.forEach((list, i) => {
+        const string = list.join(", ");
+
+        console.log(string.padStart(Math.ceil(i * 2.5) + string.length, " "));
+    });
+
+    if (!commonDifference) {
+        console.log("\nThere is no common difference");
+
+        return;
+    }
+
+    let nextValueInSequence = 0;
+
+    for (let i = 0; i < listSequences.length; ++i) {
+        nextValueInSequence += listSequences[i][listSequences[i].length - 1];
+    }
+
+    console.log("\nNext value in sequence: ", nextValueInSequence);
+
+    listSequences[0].push(nextValueInSequence);
+
+    for (let i = 0; i < listSequences.length; ++i) {
+        if (i < listSequences.length - 1) {
+            listSequences[i + 1].push(
+                listSequences[i].at(-1) - listSequences[i].at(-2),
+            );
+        }
+    }
+
+    console.log("Updated sequence list");
+    console.log("----------------------------");
+    listSequences.forEach((list, i) => {
+        const string = list.join(", ");
+
+        console.log(string.padStart(Math.ceil(i * 2.5) + string.length, " "));
+    });
 }
 
 main();

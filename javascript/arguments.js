@@ -42,9 +42,7 @@ function parseSequence(seq) {
     }
 
     const sequence = seq.split(",").map((w) => {
-        const trimmed = w.trim();
-
-        if (!isNumber(trimmed)) {
+        if (!isNumber(w)) {
             throw new TypeError("invalid-type");
         }
 
